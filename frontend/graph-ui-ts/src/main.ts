@@ -1,5 +1,7 @@
 import './style.css'
-import { Orb, Color,OrbEventType } from "@memgraph/orb";
+import { Orb, Color, OrbEventType } from "@memgraph/orb";
+import edgesData from "../public/data/edges.json"
+import nodesData from "../public/data/nodes.json"
 
 type GraphNode = {
   id: number;
@@ -13,25 +15,8 @@ type GraphEdge = {
   end: number;
   label?: string;
 };
-const nodes: GraphNode[] = [
-  { id: 1, name: "House of the Dragon", type: "Show" },
-  { id: 2, name: "Rhaenyra Targaryen", type: "Person", family: "Targaryen" },
-  { id: 3, name: "Daemon Targaryen", type: "Person", family: "Targaryen" },
-  { id: 4, name: "Viserys Targaryen", type: "Person", family: "Targaryen" },
-  { id: 5, name: "Otto Hightower", type: "Person", family: "Hightower" },
-  { id: 6, name: "Alicent Hightower", type: "Person", family: "Hightower" },
-];
-const edges: GraphEdge[] = [
-  { id: 1, start: 2, end: 1 },
-  { id: 2, start: 3, end: 1 },
-  { id: 3, start: 4, end: 1 },
-  { id: 4, start: 5, end: 1 },
-  { id: 5, start: 6, end: 1 },
-  { id: 6, start: 3, end: 4, label: "brother of" },
-  { id: 7, start: 4, end: 3, label: "brother of" },
-  { id: 8, start: 2, end: 4, label: "child of" },
-  { id: 9, start: 6, end: 5, label: "child of" },
-];
+const nodes: GraphNode[] = JSON.parse(nodesData);
+const edges: GraphEdge[] = JSON.parse(edgesData);
 
 const container = document.getElementById("graph");
 const orb = new Orb<GraphNode, GraphEdge>(container as HTMLElement);

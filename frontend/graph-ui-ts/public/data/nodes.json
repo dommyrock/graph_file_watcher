@@ -1,0 +1,8 @@
+[
+   { "id": 1, "name": "House of the Dragon", "type": "Show" },
+   { "id": 2, "name": "Rhaenyra Targaryen", "type": "Person", "family": "Targaryen" },
+   { "id": 3, "name": "Daemon Targaryen", "type": "Person", "family": "Targaryen" },
+   { "id": 4, "name": "Viserys Targaryen", "type": "Person", "family": "Targaryen" },
+   { "id": 5, "name": "Otto Hightower", "type": "Person", "family": "Hightower" },
+   { "id": 6, "name": "Alicent Hightower", "type": "Person", "family": "Hightower" }
+ ]

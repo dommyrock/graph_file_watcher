@@ -1,0 +1,11 @@
+[
+   { "id": 1, "start": 2, "end": 1 },
+   { "id": 2, "start": 3, "end": 1 },
+   { "id": 3, "start": 4, "end": 1 },
+   { "id": 4, "start": 5, "end": 1 },
+   { "id": 5, "start": 6, "end": 1 },
+   { "id": 6, "start": 3, "end": 4, "label": "brother of" },
+   { "id": 7, "start": 4, "end": 3, "label": "brother of" },
+   { "id": 8, "start": 2, "end": 4, "label": "child of" },
+   { "id": 9, "start": 6, "end": 5, "label": "child of" }
+ ]
