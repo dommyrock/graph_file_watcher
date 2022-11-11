@@ -99,7 +99,7 @@ orb.events.on(OrbEventType.NODE_CLICK, (event) => {
     orb.data.merge({ nodes, edges });
   } else {
     // Otherwise, remove the clicked node from the orb
-    orb.data.remove({ nodeIds: [event.node.id] });
+    // orb.data.remove({ nodeIds: [event.node.id] }); //DISABLED while testing
   }
   orb.view.render();
 });
