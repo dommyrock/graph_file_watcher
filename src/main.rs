@@ -47,9 +47,7 @@ fn main() {
         name: String::from(dir_path),
         kind: String::from("Folder"),
     }];
-
     let mut edges: Vec<Edge> = vec![];
-    // let mut layer_id: u32 = 1;
     let mut current_node: u32 = 1;
     let mut folder_queue: Vec<DirInfo> = Vec::from([DirInfo {
         id: 0,
@@ -61,7 +59,6 @@ fn main() {
         &mut folder_queue,
         &mut nodes,
         &mut edges,
-        // &mut layer_id,
         &mut current_node,
     );
 
@@ -94,7 +91,8 @@ where
         .map(|x| x.map(|entry| entry.path()))
         .collect()
 }
-/* TESTING
+
+/* Path > PathBuff Conversions
         let pb: PathBuf = [r"C:\", "windows", "system32.dll"].iter().collect();
         let pth: &Path = pb.as_path();
         let coerced_to_path:&Path = PathBuf::from("/test").as_path();
@@ -115,7 +113,6 @@ fn gen_directory_links<P>(
     folder_queue: &mut Vec<DirInfo>,
     nodes: &mut Vec<Node>,
     edges: &mut Vec<Edge>,
-    // layer_id: &mut u32,
     current_node: &mut u32,
 ) -> io::Result<()>
 where
@@ -126,11 +123,17 @@ where
             if let Some(pb) = folder_queue.first().cloned() {
                 if let Ok(d_i_r) = fs::read_dir(&pb.pth) {
                     for entry in d_i_r {
-                        let path = entry?.path();
+                        let path = &entry?.path();
+
+                        let ext_name = path
+                            .file_name()
+                            .expect("Failed to get 'filename' from Abs path")
+                            .to_str()
+                            .expect("Fail OsStr > &str conversion");
 
                         nodes.push(Node {
                             id: *current_node,
-                            name: path.display().to_string(),
+                            name: String::from(ext_name),
                             kind: if path.is_dir() {
                                 String::from("Folder")
                             } else {
@@ -140,7 +143,7 @@ where
 
                         edges.push(Edge {
                             id: *current_node,
-                            name: path.display().to_string(),
+                            name: String::from(ext_name),
                             start: pb.id,
                             end: *current_node,
                             kind: String::from("File"),
@@ -148,7 +151,7 @@ where
 
                         if path.is_dir() {
                             folder_queue.push(DirInfo {
-                                pth: path,
+                                pth: path.to_path_buf(),
                                 id: *current_node,
                             });
                         }

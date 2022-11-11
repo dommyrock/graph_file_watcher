@@ -2,12 +2,13 @@ import './style.css'
 import { Orb, Color, OrbEventType } from "@memgraph/orb";
 import edgesData from "../public/data/edges.json"
 import nodesData from "../public/data/nodes.json"
+//Style Defs -->  INodeStyle & IEdgeStyle
+//D:\Me\Git\graph_file_watcher\frontend\graph-ui-ts\node_modules\@memgraph\orb\dist\models\style.d.ts
 
 type GraphNode = {
   id: number;
   name: string;
-  type: string;
-  family?: string;
+  kind: string; //type
 };
 type GraphEdge = {
   id: number;
@@ -22,38 +23,36 @@ const container = document.getElementById("graph");
 const orb = new Orb<GraphNode, GraphEdge>(container as HTMLElement);
 
 const imageUrlByNodeId: any = {
-  1: "https://static.hbo.com/2022-06/house-of-the-dragon-ka-1920.jpg",
-  2: "https://static.hbo.com/2022-05/house-of-the-dragon-character-rhaenyra-512x512_0.jpg?w=512",
-  3: "https://static.hbo.com/2022-05/house-of-the-dragon-character-daemon-512x512.jpg?w=512",
-  4: "https://static.hbo.com/2022-05/house-of-the-dragon-character-viserys-512x512_0.jpg?w=512",
-  5: "https://static.hbo.com/2022-05/house-of-the-dragon-character-otto-512x512.jpg?w=512",
-  6: "https://static.hbo.com/2022-05/house-of-the-dragon-character-alicent-512x512_2.jpg?w=512",
+  0: "/folder.svg",
+  1: "/doc.svg",
 };
-const colorByFamily: any = {
-  Targaryen: "#c51c1c",
-  Hightower: "#1ead2a",
+const colorByType: any = {
+  Folder: "#c51c1c",
+  File: "#1ead2a",
 };
 
 // Set default style for new nodes and new edges
 orb.data.setDefaultStyle({
   getNodeStyle(node) {
-    const imageUrl = imageUrlByNodeId[node.id];
+    const imageUrl = imageUrlByNodeId[0];
     // Shared style properties for all the nodes
     const commonProperties = {
       size: 10,
       fontSize: 3,
+      // shape:NodeShapeType.SQUARE,
       imageUrl,
       label: node.data.name,
     };
 
-    // Specific style properties for nodes where ".type = 'Person'"
-    if (node.data.type === "Person") {
+    // Specific style properties for nodes where ".type = 'File'"
+    if (node.data.kind === "File") {
       return {
         ...commonProperties,
         // Border color will be the color of the family
-        borderColor: colorByFamily[node.data.family!],
+        borderColor: colorByType[node.data.kind!],
+        imageUrl:imageUrlByNodeId[1],
         borderWidth: 0.9,
-        size: 6,
+        size: 5,
       };
     }
 
@@ -61,7 +60,7 @@ orb.data.setDefaultStyle({
   },
   getEdgeStyle(edge) {
     // Using Orb.Color to easily generate darker colors below
-    const familyColor = new Color(colorByFamily[edge.endNode.data.family!] ?? "#999999")
+    const familyColor = new Color(colorByType[edge.endNode.data.kind!] ?? "#999999")
     return {
       color: familyColor,
       colorHover: familyColor.getDarkerColor(),
@@ -69,7 +68,7 @@ orb.data.setDefaultStyle({
       fontSize: 3,
       fontColor: familyColor.getDarkerColor(),
       // Edges will "label" property will have 3x larger width
-      width: edge.data.label ? 0.3 : 0.1,
+      width:  0.1,
       widthHover: 0.9,
       widthSelected: 0.9,
       label: edge.data.label,
@@ -85,7 +84,7 @@ orb.data.setup({ nodes, edges });
 // disable transparency of unselected/not hovered nodes/edges
 orb.view.setSettings({
   simulation: {
-    isPhysicsEnabled: true,
+    // isPhysicsEnabled: true,
   },
   render: {
     contextAlphaOnEventIsEnabled: false,
@@ -93,7 +92,7 @@ orb.view.setSettings({
 });
 
 orb.events.on(OrbEventType.NODE_CLICK, (event) => {
-  if (event.node.data.type === "Show") {
+  if (event.node.data.kind === "Folder") {
     // If it is a central "Show" node, we want to return all the nodes and
     // edges - we use merge
     orb.data.merge({ nodes, edges });
