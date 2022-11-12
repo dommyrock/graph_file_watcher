@@ -1,9 +1,7 @@
 import './style.css'
-import { Orb, Color, OrbEventType } from "@memgraph/orb";
+import { Orb, Color, OrbEventType, INodeStyle } from "@memgraph/orb";
 import edgesData from "../public/data/edges.json"
 import nodesData from "../public/data/nodes.json"
-//Style Defs -->  INodeStyle & IEdgeStyle
-//D:\Me\Git\graph_file_watcher\frontend\graph-ui-ts\node_modules\@memgraph\orb\dist\models\style.d.ts
 
 type GraphNode = {
   id: number;
@@ -27,8 +25,8 @@ const imageUrlByNodeId: any = {
   1: "/doc.svg",
 };
 const colorByType: any = {
-  Folder: "#c51c1c",
-  File: "#1ead2a",
+  Folder: "#ae4949",
+  File: "#07a5da",
 };
 
 // Set default style for new nodes and new edges
@@ -36,12 +34,15 @@ orb.data.setDefaultStyle({
   getNodeStyle(node) {
     const imageUrl = imageUrlByNodeId[0];
     // Shared style properties for all the nodes
-    const commonProperties = {
+    const commonProperties: INodeStyle = {
       size: 10,
-      fontSize: 3,
-      // shape:NodeShapeType.SQUARE,
+      fontSize: 4,
+      borderWidth: 0.8,
+      borderColor: "#fff",
+      borderColorHover: colorByType[node.data.kind!],
       imageUrl,
       label: node.data.name,
+      color: "#fff"
     };
 
     // Specific style properties for nodes where ".type = 'File'"
@@ -49,10 +50,11 @@ orb.data.setDefaultStyle({
       return {
         ...commonProperties,
         // Border color will be the color of the family
-        borderColor: colorByType[node.data.kind!],
-        imageUrl:imageUrlByNodeId[1],
-        borderWidth: 0.9,
+        imageUrl: imageUrlByNodeId[1],
         size: 5,
+        borderWidth: 1,
+        borderColor: "#fff",
+        borderColorHover: colorByType[node.data.kind!]
       };
     }
 
@@ -61,16 +63,17 @@ orb.data.setDefaultStyle({
   getEdgeStyle(edge) {
     // Using Orb.Color to easily generate darker colors below
     const familyColor = new Color(colorByType[edge.endNode.data.kind!] ?? "#999999")
+    const hoverColor = edge.endNode.data.kind! === "Folder" ? colorByType[edge.endNode.data.kind!] : "#4e4e4e";
     return {
       color: familyColor,
-      colorHover: familyColor.getDarkerColor(),
-      colorSelected: familyColor.getDarkerColor(),
+      colorHover: hoverColor,
+      colorSelected: hoverColor,
       fontSize: 3,
       fontColor: familyColor.getDarkerColor(),
       // Edges will "label" property will have 3x larger width
-      width:  0.1,
-      widthHover: 0.9,
-      widthSelected: 0.9,
+      width: 0.1,
+      widthHover: 0.7,
+      widthSelected: 0.7,
       label: edge.data.label,
     };
   },
@@ -97,6 +100,12 @@ orb.events.on(OrbEventType.NODE_CLICK, (event) => {
     // edges - we use merge
     orb.data.merge({ nodes, edges });
   } else {
+    if (event.node.style.fontBackgroundColor !== "lightyellow") {
+      event.node.style.fontBackgroundColor = "lightyellow";
+    }
+    else {
+      event.node.style.fontBackgroundColor = undefined;
+    }
     // Otherwise, remove the clicked node from the orb
     // orb.data.remove({ nodeIds: [event.node.id] }); //DISABLED while testing
   }

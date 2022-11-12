@@ -17,7 +17,7 @@ pub struct Edge {
     name: String,
     start: u32,
     end: u32,
-    kind: String,
+    label: Option<String>,
 }
 #[derive(Clone)]
 pub struct DirInfo {
@@ -146,7 +146,7 @@ where
                             name: String::from(ext_name),
                             start: pb.id,
                             end: *current_node,
-                            kind: String::from("File"),
+                            label: None,
                         });
 
                         if path.is_dir() {
@@ -188,7 +188,8 @@ pub fn get_out_file_paths() -> (node_file, edge_file) {
     return (res.remove(0), res.remove(0));
 }
 
-///Executes external processes from current program
+///Executes external processes from current program synchronously 
+///(meaninig that it blocks current thread)
 ///
 ///See: https://stackoverflow.com/questions/62273768/couldnt-convert-the-error-to-stdioerror#:~:text=update%3A%20it%20was%20pointed%20out
 ///
