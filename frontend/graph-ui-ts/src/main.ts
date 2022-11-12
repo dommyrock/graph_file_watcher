@@ -28,6 +28,7 @@ const colorByType: any = {
   Folder: "#ae4949",
   File: "#07a5da",
 };
+const mainNodeColor: string = "#fff"
 
 // Set default style for new nodes and new edges
 orb.data.setDefaultStyle({
@@ -38,11 +39,11 @@ orb.data.setDefaultStyle({
       size: 10,
       fontSize: 4,
       borderWidth: 0.8,
-      borderColor: "#fff",
+      borderColor: mainNodeColor,
       borderColorHover: colorByType[node.data.kind!],
       imageUrl,
       label: node.data.name,
-      color: "#fff"
+      color: mainNodeColor
     };
 
     // Specific style properties for nodes where ".type = 'File'"
@@ -53,7 +54,7 @@ orb.data.setDefaultStyle({
         imageUrl: imageUrlByNodeId[1],
         size: 5,
         borderWidth: 1,
-        borderColor: "#fff",
+        borderColor: mainNodeColor,
         borderColorHover: colorByType[node.data.kind!]
       };
     }
