@@ -4,5 +4,10 @@ Rust directory traverser that also renders contents info graph.
 ### Output of Directory relationship tree example
 ![image](https://user-images.githubusercontent.com/32032778/201526948-97f94fc1-2b9d-4757-9a64-a4575ce7baa3.png)
 
+### This is how much time and total node count is contained on local C:/ drive
+![image](https://user-images.githubusercontent.com/32032778/201527526-bd54ea54-1b14-4c68-9f35-0d5a50db3c10.png)
+
+---
+
 ### Linker logix (BSF)
 ![image](https://user-images.githubusercontent.com/32032778/201495138-357a1ee3-bc7b-4b0c-a0cd-bd2a41a1bbc9.png)
