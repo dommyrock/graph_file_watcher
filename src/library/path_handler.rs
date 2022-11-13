@@ -43,6 +43,7 @@ fn initialize_linker_data(dir_path: &String) -> (Vec<Node>, Vec<Edge>, u32, Vec<
         id: 0,
         name: String::from(dir_path),
         kind: String::from("Folder"),
+        size: None,
     }];
     let edges: Vec<Edge> = vec![];
     let current_node: u32 = 1;
@@ -91,6 +92,15 @@ where
                                 String::from("Folder")
                             } else {
                                 String::from("File")
+                            },
+                            size: if path.is_file() {
+                                let size = util::get_size_metadata(path.to_str().unwrap());
+                                match size{
+                                    Ok(x) => Some(String::from(format!("{x:?} Kb"))),
+                                    _ => Some(String::from(""))
+                                }
+                            } else {
+                                None
                             },
                         });
 

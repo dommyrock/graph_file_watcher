@@ -8,6 +8,7 @@ pub struct Node {
     pub id: u32,
     pub name: String,
     pub kind: String,
+    pub size: Option<String>,
 }
 #[derive(Serialize, Debug)]
 pub struct Edge {
