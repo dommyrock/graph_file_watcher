@@ -1,3 +1,4 @@
+use crate::library::util;
 use crate::model::model::{DirInfo, Edge, JsonWriter, Node};
 use std::fs::{File, OpenOptions};
 use std::io::BufWriter;
@@ -8,7 +9,10 @@ pub fn compose_graph_links() {
     let args = std::env::args().collect::<Vec<String>>();
     let dir_path = &String::from(&args[1]); //1st arg is always path
 
-    let (mut nodes, mut edges, mut current_node, mut folder_queue) = init(dir_path);
+    let (mut nodes, mut edges, mut current_node, mut folder_queue) =
+        initialize_linker_data(dir_path);
+
+    let timer = util::console_timer(format!("Linking directory relationships..."));
 
     let _ = gen_directory_links(
         Path::new(dir_path),
@@ -17,7 +21,11 @@ pub fn compose_graph_links() {
         &mut edges,
         &mut current_node,
     );
-    //SERIALIZE DATA TO FILES
+    util::console_timer_end(timer);
+
+    let node_count = nodes.len() - 1;
+    let timer = util::console_timer(format!("Writing [{node_count} Nodes] to Json file..."));
+
     let (node_file, edge_file) = get_output_paths();
     //Write updated Dir structure to files
     let _nodes_payload = serde_json::to_string(&nodes)
@@ -26,8 +34,11 @@ pub fn compose_graph_links() {
     let _edges_payload = serde_json::to_string(&edges)
         .expect("expected JSON String")
         .write_json(BufWriter::new(edge_file));
+
+    util::console_timer_end(timer);
 }
-fn init(dir_path: &String) -> (Vec<Node>, Vec<Edge>, u32, Vec<DirInfo>) {
+
+fn initialize_linker_data(dir_path: &String) -> (Vec<Node>, Vec<Edge>, u32, Vec<DirInfo>) {
     let nodes: Vec<Node> = vec![Node {
         id: 0,
         name: String::from(dir_path),
@@ -50,7 +61,7 @@ fn init(dir_path: &String) -> (Vec<Node>, Vec<Edge>, u32, Vec<DirInfo>) {
 /// ```
 /// I need to update "folder_queue" while having references to it
 /// https://stackoverflow.com/questions/47618823/cannot-borrow-as-mutable-because-it-is-also-borrowed-as-immutable
-pub fn gen_directory_links<P>(
+fn gen_directory_links<P>(
     dir: P,
     folder_queue: &mut Vec<DirInfo>,
     nodes: &mut Vec<Node>,
@@ -110,7 +121,7 @@ where
 
 use File as node_file;
 use File as edge_file;
-pub fn get_output_paths() -> (node_file, edge_file) {
+fn get_output_paths() -> (node_file, edge_file) {
     const BASE_PATH: &str = "D:\\Me\\Git\\graph_file_watcher\\frontend\\graph-ui-ts\\public\\data";
 
     let mut res: Vec<File> = vec![];
@@ -133,7 +144,7 @@ pub fn get_output_paths() -> (node_file, edge_file) {
 ///https://stackoverflow.com/questions/37439327/how-to-write-a-function-that-returns-vecpath
 ///
 ///https://nick.groenen.me/notes/rust-path-vs-pathbuf
-pub fn read_filenames_from_dir<P>(path: P) -> Result<Vec<PathBuf>, io::Error>
+fn _read_filenames_from_dir<P>(path: P) -> Result<Vec<PathBuf>, io::Error>
 where
     P: AsRef<Path>,
 {

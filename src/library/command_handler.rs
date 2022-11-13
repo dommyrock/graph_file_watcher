@@ -19,7 +19,7 @@ use std::process::Command;
 /// assert!(std::env::set_current_dir(&npm).is_ok());
 /// ```
 ///Example: https://github.com/egoist/dum/blob/main/src/run.rs
-pub fn start_node_client() -> Result<(), Box<dyn std::error::Error>> {
+pub fn _start_node_client() -> Result<(), Box<dyn std::error::Error>> {
     let (sh, sh_flag) = if cfg!(target_os = "windows") {
         ("cmd", "/C")
     } else {

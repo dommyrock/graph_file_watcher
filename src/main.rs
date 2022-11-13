@@ -1,6 +1,6 @@
 mod library;
 mod model;
-use crate::library::{command_handler, path_handler};
+use crate::library::{ path_handler};
 
 fn main() {
     path_handler::compose_graph_links();
