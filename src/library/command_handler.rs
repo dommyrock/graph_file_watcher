@@ -19,13 +19,16 @@ use std::process::Command;
 /// assert!(std::env::set_current_dir(&npm).is_ok());
 /// ```
 ///Example: https://github.com/egoist/dum/blob/main/src/run.rs
-pub fn _start_node_client() -> Result<(), Box<dyn std::error::Error>> {
-    let (sh, sh_flag) = if cfg!(target_os = "windows") {
-        ("cmd", "/C")
-    } else {
-        ("sh", "-c")
-    };
-
+///
+/// Fallback pkill
+/// 
+///When server is started we stay waiting for it so workaround for now is this shotdown cmd
+//1 Get-Process -Id (Get-NetTCPConnection -LocalPort 4173).OwningProcess
+//2 Stop-Process -Id <PID>
+pub fn start_node_client() -> Result<(), Box<dyn std::error::Error>> {
+    let (sh, sh_flag) = get_os_sh_pfx();
+    let port = 9000;
+    println!("Starting node server @ Port:{port:?}...");
     let npm = Command::new(sh)
         .arg(sh_flag)
         .arg("npm run srv")
@@ -34,16 +37,29 @@ pub fn _start_node_client() -> Result<(), Box<dyn std::error::Error>> {
         ))
         .output();
 
-    //When server is started we stay waiting for it so workaround for now is this shotdown cmd
-    //1 Get-Process -Id (Get-NetTCPConnection -LocalPort 4173).OwningProcess
-    //2 Stop-Process -Id <PID>
-
     if npm.is_err() {
         let k = npm.unwrap();
-        println!("Err --> {k:?}");
-    } else {
-        println!("Hmmm: {npm:?}")
+        println!("Err while starting node server on localhost:{port:?} --> {k:?}");
     }
 
     Ok(())
+}
+
+///Get target os sh prefix
+fn get_os_sh_pfx<'a>() -> (&'a str, &'a str) {
+    if cfg!(target_os = "windows") {
+        return ("cmd", "/C");
+    }
+    return ("sh", "-c");
+}
+///Open browser or tab (if funning already) at specific url
+pub fn open_url(url: &str) -> bool {
+    let (sh, sh_flag) = get_os_sh_pfx();
+
+    if let Ok(mut child) = Command::new(sh).arg(sh_flag).arg("start").arg(&url).spawn() {
+        if let Ok(status) = child.wait() {
+            return status.success();
+        }
+    }
+    false
 }

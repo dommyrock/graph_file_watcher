@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "srv": "tsc && vite build && vite preview"
+    "srv": "tsc && vite build && vite preview --port 9000"
   },
   "devDependencies": {
     "typescript": "^4.6.4",
