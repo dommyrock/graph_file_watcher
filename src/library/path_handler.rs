@@ -147,8 +147,8 @@ fn get_output_paths() -> (node_file, edge_file) {
                 .unwrap(),
         );
     }
+    return (res.swap_remove(0), res.swap_remove(0));
     //https://stackoverflow.com/questions/27904864/what-does-cannot-move-out-of-index-of-mean
-    return (res.remove(0), res.remove(0));
 }
 
 ///https://stackoverflow.com/questions/37439327/how-to-write-a-function-that-returns-vecpath
