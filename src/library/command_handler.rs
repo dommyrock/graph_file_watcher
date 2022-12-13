@@ -1,4 +1,4 @@
-use std::path::Path;
+use crate::path_handler;
 use std::process::Command;
 
 ///Executes external processes from current program synchronously
@@ -21,7 +21,7 @@ use std::process::Command;
 ///Example: https://github.com/egoist/dum/blob/main/src/run.rs
 ///
 /// Fallback pkill
-/// 
+///
 ///When server is started we stay waiting for it so workaround for now is this shotdown cmd
 //1 Get-Process -Id (Get-NetTCPConnection -LocalPort 4173).OwningProcess
 //2 Stop-Process -Id <PID>
@@ -29,17 +29,23 @@ pub fn start_node_client() -> Result<(), Box<dyn std::error::Error>> {
     let (sh, sh_flag) = get_os_sh_pfx();
     let port = 9000;
     println!("Starting node server @ Port:{port:?}...");
-    let npm = Command::new(sh)
-        .arg(sh_flag)
-        .arg("npm run srv")
-        .current_dir(Path::new(
-            "D:\\Me\\Git\\graph_file_watcher\\frontend\\graph-ui-ts",
-        ))
-        .output();
 
-    if npm.is_err() {
-        let k = npm.unwrap();
-        println!("Err while starting node server on localhost:{port:?} --> {k:?}");
+    let fro_dir_rel = std::fs::canonicalize("./frontend/graph-ui-ts");
+    if fro_dir_rel.is_ok() {
+        //find node server location
+        let display_path = path_handler::adjust_canonicalization(fro_dir_rel?);
+
+        let npm = Command::new(sh)
+            .arg(sh_flag)
+            .arg("npm run srv")
+            .current_dir(display_path)
+            .output();
+
+        if npm.is_err() {
+            println!("Err while starting node server on localhost:{port:?} --> {:?}",npm?);
+        }
+    } else {
+        panic!("Expected to find node server in ./frontend/graph-ui-ts")
     }
 
     Ok(())

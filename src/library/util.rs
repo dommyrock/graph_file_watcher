@@ -24,3 +24,9 @@ enum Conversion {
     Mb,
     Kb,
 }
+
+impl Default for Conversion {
+    fn default() -> Self {
+        Self::Mb
+    }
+}

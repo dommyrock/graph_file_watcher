@@ -95,9 +95,9 @@ where
                             },
                             size: if path.is_file() {
                                 let size = util::get_size_metadata(path.to_str().unwrap());
-                                match size{
+                                match size {
                                     Ok(x) => Some(String::from(format!("{x:?} Kb"))),
-                                    _ => Some(String::from(""))
+                                    _ => Some(String::from("")),
                                 }
                             } else {
                                 None
@@ -118,7 +118,6 @@ where
                                 id: *current_node,
                             });
                         }
-                        //NEXT NODE
                         *current_node += 1;
                     }
                 }
@@ -132,12 +131,12 @@ where
 use File as node_file;
 use File as edge_file;
 fn get_output_paths() -> (node_file, edge_file) {
-    const BASE_PATH: &str = "D:\\Me\\Git\\graph_file_watcher\\frontend\\graph-ui-ts\\public\\data";
+    const LINKER_OUT_PTH: &str = ".\\frontend\\graph-ui-ts\\public\\data";
 
     let mut res: Vec<File> = vec![];
 
     for file_name in vec!["nodes.json", "edges.json"] {
-        let pth = format!("{BASE_PATH}\\{file_name}");
+        let pth = format!("{LINKER_OUT_PTH}\\{file_name}");
         res.push(
             OpenOptions::new()
                 .create(true)
@@ -162,6 +161,32 @@ where
         .into_iter()
         .map(|x| x.map(|entry| entry.path()))
         .collect()
+}
+#[cfg(not(target_os = "windows"))]
+pub fn adjust_canonicalization<P: AsRef<Path>>(p: P) -> String {
+    p.as_ref().display().to_string()
+}
+
+///Os specific relative path adjustment
+/// Example usage
+/// ```
+/// pub fn main() {
+///let path = PathBuf::from(r#"C:\Windows\System32"#)
+///     .canonicalize()
+///     .unwrap();
+///let display_path = adjust_canonicalization(path);
+///println!("Output: {}", display_path);
+///}
+/// ```
+#[cfg(target_os = "windows")]
+pub fn adjust_canonicalization<P: AsRef<Path>>(p: P) -> String {
+    const VERBATIM_PREFIX: &str = r#"\\?\"#;
+    let p = p.as_ref().display().to_string();
+    if p.starts_with(VERBATIM_PREFIX) {
+        p[VERBATIM_PREFIX.len()..].to_string()
+    } else {
+        p
+    }
 }
 
 /* Path > PathBuff Conversions
