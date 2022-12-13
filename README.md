@@ -4,9 +4,10 @@ Rust directory traverser that also renders contents info graph.
 ### Starting cli tool through targeting .exe in its download path 
 ![image](https://user-images.githubusercontent.com/32032778/207408951-7d6f1722-2043-4901-915b-354d8c18bb5a.png)
 
-### Option 2 : Clone the repo instal rust toolchan and run locally 
+### Option 2 : Clone the repo & install rust toolchan to run locally 
   Rust toolchain : https://www.rust-lang.org/tools/install
-  Bellow commmands will build & run code with <Directoru_Path> specified as 1st argument 
+  
+  Bellow commmands will build & run code with <Directory_Path> specified as 1st argument 
 ```
 cargo run C:\Users\dpolzer\Downloads\er\mobile
 ```
