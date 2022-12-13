@@ -1,6 +1,21 @@
 # graph_file_watcher
 Rust directory traverser that also renders contents info graph.
 
+### Starting cli tool through targeting .exe in its download path 
+![image](https://user-images.githubusercontent.com/32032778/207408951-7d6f1722-2043-4901-915b-354d8c18bb5a.png)
+
+### Option 2 : Clone the repo instal rust toolchan and run locally 
+  Rust toolchain : https://www.rust-lang.org/tools/install
+  Bellow commmands will build & run code with <Directoru_Path> specified as 1st argument 
+```
+cargo run C:\Users\dpolzer\Downloads\er\mobile
+```
+
+If you want to build your own exe (release mode)
+```
+cargo build -r
+```
+
 ### Output of Directory relationship tree example
 ![image](https://user-images.githubusercontent.com/32032778/201526948-97f94fc1-2b9d-4757-9a64-a4575ce7baa3.png)
 
